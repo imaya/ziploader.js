@@ -1,0 +1,23 @@
+goog.require('ZipLoader');
+goog.require('Zlib.Unzip');
+
+goog.exportSymbol(
+  'ZipLoader',
+  ZipLoader
+);
+goog.exportSymbol(
+  'ZipLoader.prototype.getArchives',
+  ZipLoader.prototype.getArchives
+);
+goog.exportSymbol(
+  'ZipLoader.prototype.applyElementAll',
+  ZipLoader.prototype.applyElementAll
+);
+goog.exportSymbol(
+  'ZipLoader.prototype.applyElement',
+  ZipLoader.prototype.applyElement
+);
+goog.exportSymbol(
+  'ZipLoader.prototype.requestArchive',
+  ZipLoader.prototype.requestArchive
+);
