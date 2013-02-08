@@ -48,7 +48,7 @@ buster.testCase(
       zl.applyElement(this.element, 'src');
 
       // wait replace attributes
-      setTimeout(function() {
+      image.addEventListener('load', function(ev) {
         assert(image.getAttribute('src'));
         refute(image.getAttribute('data-archive'));
         refute(image.getAttribute('data-filename'));
@@ -59,7 +59,7 @@ buster.testCase(
           assert.equals(image.naturalHeight, 32, 'svg natural height');
         }
         done();
-      }, 100);
+      }, false);
     },
     //
     // querySelector による該当要素すべてに適用する
