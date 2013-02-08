@@ -3,10 +3,17 @@
 
   <head>
     <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <meta name="description" content="Ziploader.js : Zip Container Loader" />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/prettify.css">
+    <script src="javascripts/ziploader.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var zl = new ZipLoader();
+        zl.applyElementAll('img[data-archive]', 'src');
+      }, false);
+    </script>
 
     <title>Ziploader.js</title>
   </head>
@@ -31,32 +38,44 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h3>Welcome to GitHub Pages.</h3>
+<!-- content -->
+        <h1>ziploader.js</h1>
+        <p>ziploader.js は ZIP 形式のファイルを読み込み、DOM に適用するためのライブラリです。</p>
+        <h2>CSS スプライトの代わりに</h2>
+        <p>CSS スプライトは複数の画像を一つのスプライト画像にまとめる事により HTTP 通信の回数を減らす、Web サイトの表示最適化の中ではもっとも知られている手段の一つです。<br>一つの画像にまとめる事が出来る反面、本来の画像である img 要素ではなく要素の背景として実現されます。</p>
+        <p>ziploader.js では、zip ファイルを読み込んだ後に個々の img 要素の src 属性を書き換えて表示するため、img 要素のまま扱う事ができます。<br>また、それぞれ別の画像になっているため、個別に拡大や縮小して表示することも可能です。</p>
+        <p>以下は SVG を一つの zip ファイルにまとめ、それを表示しているものです。<br>（もし疑わしいと思うのでしたら、開発者ツールで確認してみるとよいでしょう）</p>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+        <!-- svg zip -->
+        <img data-archive="images/svg32.zip" data-filename="access_bus.svg" width="4" height="4">
+        <img data-archive="images/svg32.zip" data-filename="access_train.svg" width="8" height="8">
+        <img data-archive="images/svg32.zip" data-filename="access_walk.svg" width="16" height="16">
+        <img data-archive="images/svg32.zip" data-filename="arrow_c_down.svg" width="32" height="32">
+        <img data-archive="images/svg32.zip" data-filename="arrow_c_left.svg" width="64" height="64">
+        <img data-archive="images/svg32.zip" data-filename="arrow_c_right.svg" width="128" height="128">
+        <img data-archive="images/svg32.zip" data-filename="arrow_c_up.svg" width="256" height="256">
+        <!-- svg zip -->
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+        <p>これらの画像はすべて 32x32 の SVG 画像です。</p>
+        <p>これは、以下のように HTML と JavaScript を記述するだけです。</p>
+        <h3>HTML</h3>
+        <p>まず、data-archive 属性には zip ファイルの URL を記述します。<br>そして、data-filename 属性には zip ファイル内のファイル名を書きます。</p>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<pre><code class="lang-html">&lt;img data-archive=&quot;images/svg32.zip&quot; data-filename=&quot;access_bus.svg&quot; width=&quot;4&quot; height=&quot;4&quot;&gt;
+&lt;img data-archive=&quot;images/svg32.zip&quot; data-filename=&quot;access_train.svg&quot; width=&quot;8&quot; height=&quot;8&quot;&gt;
+&lt;img data-archive=&quot;images/svg32.zip&quot; data-filename=&quot;access_walk.svg&quot; width=&quot;16&quot; height=&quot;16&quot;&gt;
+&lt;img data-archive=&quot;images/svg32.zip&quot; data-filename=&quot;arrow_c_down.svg&quot; width=&quot;32&quot; height=&quot;32&quot;&gt;
+&lt;img data-archive=&quot;images/svg32.zip&quot; data-filename=&quot;arrow_c_left.svg&quot; width=&quot;64&quot; height=&quot;64&quot;&gt;
+&lt;img data-archive=&quot;images/svg32.zip&quot; data-filename=&quot;arrow_c_right.svg&quot; width=&quot;128&quot; height=&quot;128&quot;&gt;
+&lt;img data-archive=&quot;images/svg32.zip&quot; data-filename=&quot;arrow_c_up.svg&quot; width=&quot;256&quot; height=&quot;256&quot;&gt;</code></pre>
 
-<h3>Designer Templates</h3>
+        <h3>JavaScript</h3>
+        data-archive 属性を持つ img 要素をすべて ziploader.js で処理し、取得したデータを src 属性に適用します。
+        <pre><code class="lang-js"><span class="pln">document</span><span class="pun">.</span><span class="pln">addEventListener</span><span class="pun">(</span><span class="str">'DOMContentLoaded'</span><span class="pun">,</span><span class="pln">&nbsp;</span><span class="kwd">function</span><span class="pun">()</span><span class="pln">&nbsp;</span><span class="pun">{</span><br><span class="pln">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kwd">var</span><span class="pln">&nbsp;zl&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;</span><span class="kwd">new</span><span class="pln">&nbsp;</span><span class="typ">ZipLoader</span><span class="pun">();</span><br><span class="pln">&nbsp;&nbsp;&nbsp;&nbsp;zl</span><span class="pun">.</span><span class="pln">applyElementAll</span><span class="pun">(</span><span class="str">'img[data-archive]'</span><span class="pun">,</span><span class="pln">&nbsp;</span><span class="str">'src'</span><span class="pun">);</span><br><span class="pun">},</span><span class="pln">&nbsp;</span><span class="kwd">false</span><span class="pun">);</span></code></pre>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
 
-<h3>Rather Drive Stick?</h3>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<!-- content -->
       </section>
     </div>
 
