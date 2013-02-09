@@ -109,29 +109,33 @@ ZipLoader.prototype.createObjectURL = function(array, type) {
     array = new Uint8Array(array);
   }
 
-  // Blob constructor
-  try {
-    blob = new Blob([array], {type: type});
-  } catch(e) {
-  }
+  // avoid blob url in safari
+  if (navigator.userAgent.indexOf('Safari') === -1) {
 
-  // BlobBuilder
-  if (
-    (tmp = g.WebkitBlobBuilder) !== void 0 ||
-    (tmp = g.MozBlobBuilder) !== void 0 ||
-    (tmp = g.MSBlobBuilder) !== void 0
-  ) {
-    bb = new tmp();
-    bb.append(array.buffer);
-    blob = bb.getBlob(type);
-  }
+    // Blob constructor
+    try {
+      blob = new Blob([array], {type: type});
+    } catch(e) {
+    }
 
-  // createObjectURL
-  if (blob && (
-    ((tmp = g.URL)       && tmp.createObjectURL) ||
-    ((tmp = g.webkitURL) && tmp.createObjectURL)
-  )) {
-    return tmp.createObjectURL(blob);
+    // BlobBuilder
+    if (
+      (tmp = g.WebkitBlobBuilder) !== void 0 ||
+      (tmp = g.MozBlobBuilder) !== void 0 ||
+      (tmp = g.MSBlobBuilder) !== void 0
+    ) {
+      bb = new tmp();
+      bb.append(array.buffer);
+      blob = bb.getBlob(type);
+    }
+
+    // createObjectURL
+    if (blob && (
+      ((tmp = g.URL)       && tmp.createObjectURL) ||
+      ((tmp = g.webkitURL) && tmp.createObjectURL)
+    )) {
+      return tmp.createObjectURL(blob);
+    }
   }
 
   // DataURL
