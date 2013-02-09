@@ -139,8 +139,8 @@ ZipLoader.prototype.createObjectURL = function(array, type) {
     data += String.fromCharCode.apply(
       null,
       useTypedArray ?
-        array.slice(i, i += 0x7fff) :
-        array.subarray(i, i+= 0x7fff)
+        array.subarray(i, i+= 0x7fff) :
+        array.slice(i, i += 0x7fff)
     );
   }
 
