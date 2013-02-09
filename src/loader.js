@@ -104,13 +104,18 @@ ZipLoader.prototype.createObjectURL = function(array, type) {
   var i;
   /** @type {number} */
   var il;
+  /** @type {boolean} */
+  var isSafari = (
+    navigator.userAgent.indexOf('Safari') !== -1 &&
+    navigator.vendor.indexOf('Apple')     !== -1
+  );
 
   if (useTypedArray) {
     array = new Uint8Array(array);
   }
 
   // avoid blob url in safari
-  if (navigator.userAgent.indexOf('Safari') === -1) {
+  if (!isSafari) {
 
     // Blob constructor
     try {
