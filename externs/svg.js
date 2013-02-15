@@ -1,0 +1,2 @@
+/** @constructor */
+var SVGElement = function() {};

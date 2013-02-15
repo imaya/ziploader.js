@@ -21,3 +21,7 @@ goog.exportSymbol(
   'ZipLoader.prototype.requestArchive',
   ZipLoader.prototype.requestArchive
 );
+goog.exportSymbol(
+  'ZipLoader.prototype.setSVGFallback',
+  ZipLoader.prototype.setSVGFallback
+);

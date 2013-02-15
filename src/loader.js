@@ -9,7 +9,30 @@ goog.scope(function() {
  */
 ZipLoader = function(opt_params) {
   opt_params = opt_params || {};
+  /** @type {boolean} */
+  this.svgFallback =
+    opt_params['SVGFallback'] !== void 0 ? opt_params['SVGFallback'] : true;
 };
+
+/** @define {boolean} */
+ZipLoader.Develop = false;
+
+/** @define {string} */
+ZipLoader.AttributePrefix = 'ziploader';
+
+/** @define {string} */
+ZipLoader.ArchiveAttribute = 'archive';
+
+/** @define {string} */
+ZipLoader.FilenameAttribute = 'filename';
+
+/** @type {string} @const */
+ZipLoader.ArchiveAttributeString =
+  'data-' + ZipLoader.AttributePrefix + '-'+ ZipLoader.ArchiveAttribute;
+
+/** @type {string} @const */
+ZipLoader.FilenameAttributeString =
+  'data-' + ZipLoader.AttributePrefix + '-'+ ZipLoader.FilenameAttribute;
 
 /** @type {Object.<string, Zlib.Unzip>} */
 ZipLoader.archives = {};
@@ -19,6 +42,10 @@ ZipLoader.archives = {};
  */
 ZipLoader.prototype.getArchives = function() {
   return ZipLoader.archives;
+};
+
+ZipLoader.prototype.setSVGFallback = function(enable) {
+  this.svgFallback = enable;
 };
 
 /**
@@ -46,16 +73,25 @@ ZipLoader.prototype.applyElement = function(image, attribute) {
   /** @type {ZipLoader} */
   var that = this;
   /** @type {string} */
-  var archive = image.getAttribute('data-archive');
+  var archive = image.getAttribute(ZipLoader.ArchiveAttributeString);
   /** @type {string} */
-  var filename = image.getAttribute('data-filename');
+  var filename = image.getAttribute(ZipLoader.FilenameAttributeString);
 
   if (!archive || !filename) {
     return;
   }
 
+  // SVG Fallback
+  if (
+    this.svgFallback &&
+    goog.global['SVGElement'] === void 0 &&
+    filename.substr(-4, 4) === '.svg'
+  ) {
+    filename = filename.substr(0, filename.length - 3) + 'png';
+  }
+
   // zip アーカイブがまだ受信できていなかったらダウンロードしてから置き換える
-  if (!ZipLoader.archives[archive]) {
+  if (!ZipLoader.archives[archive] && !ZipLoader.Develop) {
     this.requestArchive(archive, function() {
       applyElement(image, attribute, archive, filename);
     });
@@ -72,13 +108,15 @@ ZipLoader.prototype.applyElement = function(image, attribute) {
   function applyElement(img, attribute, archive, filename) {
     img.setAttribute(
       attribute,
-      that.createObjectURL(
-        ZipLoader.archives[archive].decompress(filename),
-        'image/svg+xml'
-      )
+      ZipLoader.Develop ?
+        archive + '/' + filename :
+        that.createObjectURL(
+          ZipLoader.archives[archive].decompress(filename),
+          filename.substr(-4, 4) === '.png' ? 'image/png' : 'image/svg+xml'
+        )
     );
-    img.removeAttribute('data-archive');
-    img.removeAttribute('data-filename');
+    img.removeAttribute(ZipLoader.ArchiveAttributeString);
+    img.removeAttribute(ZipLoader.FilenameAttributeString);
   }
 };
 
@@ -178,7 +216,7 @@ ZipLoader.prototype.requestArchive = function(archiveURL, callback) {
     var buffer;
 
     if (xhr.readyState === 4) {
-      if (xhr.status === 200) {
+      if (xhr.status === 0 || xhr.status === 200) {
         // arraybuffer
         buffer = this.response ?
           new Uint8Array(this.response) :
