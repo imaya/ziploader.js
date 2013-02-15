@@ -11,7 +11,7 @@
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         var zl = new ZipLoader();
-        zl.applyElementAll('img[data-archive]', 'src');
+        zl.applyElementAll('img[data-ziploader-archive]', 'src');
       }, false);
     </script>
 
@@ -42,36 +42,41 @@
         <h1>ziploader.js</h1>
         <p>ziploader.js は ZIP 形式のファイルを読み込み、DOM に適用するためのライブラリです。</p>
         <h2>CSS スプライトの代わりに</h2>
-        <p>CSS スプライトは複数の画像を一つのスプライト画像にまとめる事により HTTP 通信の回数を減らす、Web サイトの表示最適化の中ではもっとも知られている手段の一つです。<br>一つの画像にまとめる事が出来る反面、本来の画像である img 要素ではなく要素の背景として実現されます。</p>
+        <p>CSS スプライトは複数の画像を一つのスプライトマップにまとめる事により HTTP 通信の回数を減らす、Web サイトの最適化の中ではもっとも知られている手段の一つです。<br>一つの画像にまとめる事が出来る反面、本来の画像である img 要素ではなく要素の背景として実現されます。</p>
         <p>ziploader.js では、zip ファイルを読み込んだ後に個々の img 要素の src 属性を書き換えて表示するため、img 要素のまま扱う事ができます。<br>また、それぞれ別の画像になっているため、個別に拡大や縮小して表示することも可能です。</p>
-        <p>以下は SVG を一つの zip ファイルにまとめ、それを表示しているものです。<br>（もし疑わしいと思うのでしたら、開発者ツールで確認してみるとよいでしょう）</p>
+        <p>以下は SVG を一つの zip ファイルにまとめ、それを表示しているものです。<br>（開発者ツールで確認してみると実際に zip ファイルしかダウンロードしていないことが分かるでしょう）</p>
 
         <!-- svg zip -->
-        <img data-archive="images/svg32.zip" data-filename="access_bus.svg" width="4" height="4">
-        <img data-archive="images/svg32.zip" data-filename="access_train.svg" width="8" height="8">
-        <img data-archive="images/svg32.zip" data-filename="access_walk.svg" width="16" height="16">
-        <img data-archive="images/svg32.zip" data-filename="arrow_c_down.svg" width="32" height="32">
-        <img data-archive="images/svg32.zip" data-filename="arrow_c_left.svg" width="64" height="64">
-        <img data-archive="images/svg32.zip" data-filename="arrow_c_right.svg" width="128" height="128">
-        <img data-archive="images/svg32.zip" data-filename="arrow_c_up.svg" width="256" height="256">
+        <img data-ziploader-archive="images/svg32.zip" data-ziploader-filename="access_bus.svg" width="4" height="4">
+        <img data-ziploader-archive="images/svg32.zip" data-ziploader-filename="access_train.svg" width="8" height="8">
+        <img data-ziploader-archive="images/svg32.zip" data-ziploader-filename="access_walk.svg" width="16" height="16">
+        <img data-ziploader-archive="images/svg32.zip" data-ziploader-filename="arrow_c_down.svg" width="32" height="32">
+        <img data-ziploader-archive="images/svg32.zip" data-ziploader-filename="arrow_c_left.svg" width="64" height="64">
+        <img data-ziploader-archive="images/svg32.zip" data-ziploader-filename="arrow_c_right.svg" width="128" height="128">
+        <img data-ziploader-archive="images/svg32.zip" data-ziploader-filename="arrow_c_up.svg" width="256" height="256">
         <!-- svg zip -->
 
-        <p>これらの画像はすべて 32x32 の SVG 画像です。</p>
+        <p>これらの画像は元はすべて 32x32 の SVG 画像です。</p>
         <p>これは、以下のように HTML と JavaScript を記述するだけです。</p>
         <h3>HTML</h3>
-        <p>まず、data-archive 属性には zip ファイルの URL を記述します。<br>そして、data-filename 属性には zip ファイル内のファイル名を書きます。</p>
-
-<pre><code class="lang-html">&lt;img data-archive=&quot;images/svg32.zip&quot; data-filename=&quot;access_bus.svg&quot; width=&quot;4&quot; height=&quot;4&quot;&gt;
-&lt;img data-archive=&quot;images/svg32.zip&quot; data-filename=&quot;access_train.svg&quot; width=&quot;8&quot; height=&quot;8&quot;&gt;
-&lt;img data-archive=&quot;images/svg32.zip&quot; data-filename=&quot;access_walk.svg&quot; width=&quot;16&quot; height=&quot;16&quot;&gt;
-&lt;img data-archive=&quot;images/svg32.zip&quot; data-filename=&quot;arrow_c_down.svg&quot; width=&quot;32&quot; height=&quot;32&quot;&gt;
-&lt;img data-archive=&quot;images/svg32.zip&quot; data-filename=&quot;arrow_c_left.svg&quot; width=&quot;64&quot; height=&quot;64&quot;&gt;
-&lt;img data-archive=&quot;images/svg32.zip&quot; data-filename=&quot;arrow_c_right.svg&quot; width=&quot;128&quot; height=&quot;128&quot;&gt;
-&lt;img data-archive=&quot;images/svg32.zip&quot; data-filename=&quot;arrow_c_up.svg&quot; width=&quot;256&quot; height=&quot;256&quot;&gt;</code></pre>
-
-        <h3>JavaScript</h3>
-        data-archive 属性を持つ img 要素をすべて ziploader.js で処理し、取得したデータを src 属性に適用します。
-        <pre><code class="lang-js"><span class="pln">document</span><span class="pun">.</span><span class="pln">addEventListener</span><span class="pun">(</span><span class="str">'DOMContentLoaded'</span><span class="pun">,</span><span class="pln">&nbsp;</span><span class="kwd">function</span><span class="pun">()</span><span class="pln">&nbsp;</span><span class="pun">{</span><br><span class="pln">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kwd">var</span><span class="pln">&nbsp;zl&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;</span><span class="kwd">new</span><span class="pln">&nbsp;</span><span class="typ">ZipLoader</span><span class="pun">();</span><br><span class="pln">&nbsp;&nbsp;&nbsp;&nbsp;zl</span><span class="pun">.</span><span class="pln">applyElementAll</span><span class="pun">(</span><span class="str">'img[data-archive]'</span><span class="pun">,</span><span class="pln">&nbsp;</span><span class="str">'src'</span><span class="pun">);</span><br><span class="pun">},</span><span class="pln">&nbsp;</span><span class="kwd">false</span><span class="pun">);</span></code></pre>
+        <p>まず、data-ziploader-archive 属性には zip ファイルの URL を記述します。<br>そして、data-ziploader-filename 属性には zip ファイル内のファイル名を書きます。</p>
+<pre><code class="lang-html">&lt;img data-ziploader-archive=&quot;images/svg32.zip&quot; data-ziploader-filename=&quot;access_bus.svg&quot; width=&quot;4&quot; height=&quot;4&quot;&gt;
+&lt;img data-ziploader-archive=&quot;images/svg32.zip&quot; data-ziploader-filename=&quot;access_train.svg&quot; width=&quot;8&quot; height=&quot;8&quot;&gt;
+&lt;img data-ziploader-archive=&quot;images/svg32.zip&quot; data-ziploader-filename=&quot;access_walk.svg&quot; width=&quot;16&quot; height=&quot;16&quot;&gt;
+&lt;img data-ziploader-archive=&quot;images/svg32.zip&quot; data-ziploader-filename=&quot;arrow_c_down.svg&quot; width=&quot;32&quot; height=&quot;32&quot;&gt;
+&lt;img data-ziploader-archive=&quot;images/svg32.zip&quot; data-ziploader-filename=&quot;arrow_c_left.svg&quot; width=&quot;64&quot; height=&quot;64&quot;&gt;
+&lt;img data-ziploader-archive=&quot;images/svg32.zip&quot; data-ziploader-filename=&quot;arrow_c_right.svg&quot; width=&quot;128&quot; height=&quot;128&quot;&gt;
+&lt;img data-ziploader-archive=&quot;images/svg32.zip&quot; data-ziploader-filename=&quot;arrow_c_up.svg&quot; width=&quot;256&quot; height=&quot;256&quot;&gt;</code></pre>
+        <h3>JavaScript: data-archive 属性を持つ img 要素をすべて ziploader.js で処理する</h3>
+        <pre><code class="lang-js"><span class="pln">document</span><span class="pun">.</span><span class="pln">addEventListener</span><span class="pun">(</span><span class="str">'DOMContentLoaded'</span><span class="pun">,</span><span class="pln">&nbsp;</span><span class="kwd">function</span><span class="pun">()</span><span class="pln">&nbsp;</span><span class="pun">{</span><br><span class="pln">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kwd">var</span><span class="pln">&nbsp;zl&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;</span><span class="kwd">new</span><span class="pln">&nbsp;</span><span class="typ">ZipLoader</span><span class="pun">();</span><br><span class="pln">&nbsp;&nbsp;&nbsp;&nbsp;zl</span><span class="pun">.</span><span class="pln">applyElementAll</span><span class="pun">(</span><span class="str">'img[data-ziploader-archive]'</span><span class="pun">,</span><span class="pln">&nbsp;</span><span class="str">'src'</span><span class="pun">);</span><br><span class="pun">},</span><span class="pln">&nbsp;</span><span class="kwd">false</span><span class="pun">);</span></code></pre>
+        <h2>開発時は zip ではなく直接ファイルを参照</h2>
+        <p>開発時に毎回 zip を作り直していたのでは大変です。<br>そこで、開発用にビルドされた js ファイルを代わりに使用することで zip ファイルと同名のディレクトリからファイルを直接参照することができます。<br>例えば、上記の例では</p>
+        <ul>
+<li>images/svg32.zip/access_bus.svg</li>
+</ul>
+<p>のようにファイルを配置しておけば、そのまま画像が表示されます。</p>
+<h2>SVG 未対応環境の PNG へのフォールバック</h2>
+<p>Android 2.x では SVG の表示が出来ないため、かわりに PNG ファイルを表示したいこともあると思います。<br>そういった場合でも ZipLoader#setSVGFallback(true); のようにしてから applyElementAll をすることで、拡張子が .svg のものは未対応端末では自動で同名の拡張子を .png に置き換えたものをロードします。</p>
 
 
 
